@@ -1,0 +1,43 @@
+# remove "version: ..." (obsolete)
+name: iot-stack
+
+services:
+  mosquitto:
+    build:
+      context: ./mosquitto
+      dockerfile: Dockerfile
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks: [iotnet]
+
+  nodered:
+    build:
+      context: ./nodered
+      dockerfile: Dockerfile
+    container_name: nodered
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zagreb
+    ports:
+      - "1880:1880"
+    volumes:
+      - nodered_data:/data
+    depends_on:
+      - mosquitto          # no health condition
+    networks: [iotnet]
+
+networks:
+  iotnet:
+    driver: bridge
+
+volumes:
+  nodered_data:
+    driver: local
+
