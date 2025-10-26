@@ -29,13 +29,6 @@ services:
       - "1880:1880"
     volumes:
       - nodered_data:/data
-      - ./nodered/seed/flows.json:/seed/flows.json:ro
-    command: ["/bin/sh","-lc",
-      "chown -R node-red:node-red /data 2>/dev/null || true; \
-       cp /seed/flows.json /data/flows.json; \
-       chown node-red:node-red /data/flows.json 2>/dev/null || true; \
-       exec npm start -- --userDir /data"
-    ]
     depends_on:
       - mosquitto          # no health condition
     networks: [iotnet]

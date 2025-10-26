@@ -1,8 +1,10 @@
 FROM nodered/node-red:latest-minimal
 ENV TZ=Europe/Zagreb
 
+USER root
 # Copy your exported flows into the image
-COPY seed/flows.json /usr/src/node-red/seed/flows.json
+COPY --chown=node-red:node-red seed/flows.json /usr/src/node-red/seed/flows.json
+RUN chmod 644 /usr/src/node-red/seed/flows.json
 
 USER node-red
 RUN npm install --no-audit --no-fund node-red-dashboard
